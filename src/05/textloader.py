@@ -13,13 +13,13 @@ documents = loader.load()
 
 # 3. 로드 결과 및 Document 내부 속성 출력
 # - len(documents): 로드된 LangChain Document 객체의 총 개수 확인 (기본값: 1)
-print("---")
+print("-" * 15)
 print(f"Load: {len(documents)}")
 
 # - page_content: 문서의 실제 본문 텍스트 데이터 추출
-print("---")
+print("-" * 15)
 print(f"Contents: {documents[0].page_content}")
 
 # - metadata: 문서의 메타데이터(딕셔너리 형태, 기본적으로 파일 출처인 'source' 경로 포함) 추출
-print("---")
+print("-" * 15)
 print(f"Meta: {documents[0].metadata}")

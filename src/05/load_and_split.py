@@ -36,19 +36,19 @@ print(f"chunk 개수: {len(chunks)}\n")
 
 # 7. 각 청크별 글자 수 검증 및 순회 출력
 # - enumerate(chunks, 1): 1번 인덱스부터 시작하여 각 청크의 길이(글자 수) 확인
-print("================")
+print("=" * 15)
 for i, chunk in enumerate(chunks, 1):
     print(f"Chunk {i}: {len(chunk.page_content)} 글자")
     print(f"Chunk {i}: \n{chunk.page_content.strip()}\n")
     
 
-print("================")
+print("=" * 15)
 # 8. 원본 Document 객체 상태 확인
 # - len(documents): 분할 전 원본 문서의 개수 (단일 파일이므로 1)
 print(f"Load: {len(documents)}")
-print("----------------")
+print("-" * 15)
 # - page_content: 분할되기 전 원본 전체 본문 텍스트
 print(f"Contents: {documents[0].page_content}")
 # - metadata: 원본 파일 경로 등의 메타데이터 확인
-print("----------------")
+print("-" * 15)
 print(f"Meta: {documents[0].metadata}")
