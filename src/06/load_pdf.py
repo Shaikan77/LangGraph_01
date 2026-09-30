@@ -1,7 +1,6 @@
 from langchain_community.document_loaders import PyPDFLoader
 
-loader = PyPDFLoader(
-    "../../data/certi.pdf"
+loader = PyPDFLoader("../../data/certi.pdf")
 )
 
 documents = loader.load()

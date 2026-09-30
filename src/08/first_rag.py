@@ -1,3 +1,4 @@
+# 2일차 PM (09/29) 실습
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
 import os
@@ -15,12 +16,14 @@ sys.path.insert(0, PREPARE_DIR)
 
 from prepare import prepare_chunks
 
+print("-" * 45)
+print("Ingest & Chunking ...")
 load_dotenv()
 chunks = prepare_chunks(PDF_PATH)
 
-emb = OpenAIEmbeddings(model="text-embedding-3-small")
 print("-" * 45)
 print("Embedding ... (시간이 조금 걸립니다.)")
+emb = OpenAIEmbeddings(model="text-embedding-3-small")
 
 store = FAISS.from_documents(chunks, embedding=emb)
 print("-" * 45)

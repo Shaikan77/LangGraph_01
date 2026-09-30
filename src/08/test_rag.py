@@ -1,3 +1,4 @@
+# 2일차 PM (09/29) 실습
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
 import os

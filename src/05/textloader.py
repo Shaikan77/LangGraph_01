@@ -4,7 +4,7 @@ from langchain_community.document_loaders import TextLoader
 # 1. 문서 로더(TextLoader) 객체 초기화
 # - 대상 파일: "data/notice.txt" (현재 작업 디렉터리 기준 상대 경로)
 # - encoding="utf-8": 한글 깨짐 방지 및 다국어 지원을 위한 인코딩 명시
-loader = TextLoader("data/notice.txt", encoding="utf-8")
+loader = TextLoader("../../data/notice.txt", encoding="utf-8")
 
 # 2. 파일 읽기 및 LangChain Document 객체 리스트 생성
 # - load() 메서드는 파일 내용을 읽어 Document 객체 리스트(List[Document]) 형태로 반환함

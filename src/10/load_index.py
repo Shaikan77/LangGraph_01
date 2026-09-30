@@ -41,6 +41,6 @@ print(f"> 검색 결과 : {len(found)}개")
 print("-" * 45)
 
 for i, doc in enumerate(found):
-    print(f"[{i+1}]")
+    print(f"[{i+1}]\n")
     print(doc.page_content)
-print("-" * 45)
+    print("-" * 45)

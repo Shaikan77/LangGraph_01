@@ -1,9 +1,6 @@
 from langchain_community.document_loaders import PyPDFLoader
 
-loader = PyPDFLoader(
-    "../../data/LangChain.pdf"
-)
-
+loader = PyPDFLoader("../../data/LangChain.pdf")
 docs = loader.load()
 
 def validate(docs):
