@@ -7,3 +7,6 @@ venv/
 # 파이썬 캐시 파일 제외
 __pycache__/
 *.pyc
+
+# FAISS Vector Store
+**/faiss_index/

@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore", message="Relevance scores must be between 0 an
 
 # ========== 설정 ==========
 TOP_K      = 3
-MIN_SCORE  = 0.1
+MIN_SCORE  = 0.05
 SEARCH_TYPE = "mmr"  # similarity / mmr
 
 _store = get_store()

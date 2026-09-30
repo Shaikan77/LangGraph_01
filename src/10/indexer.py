@@ -12,8 +12,8 @@ INDEX_PATH = "faiss_index"
 EMBEDDING_MODEL = "text-embedding-3-small"
 DOC_PATH = "../../data/manual.pdf"
 
-CHUNK_SIZE = 250
-CHUNK_OVERLAP = 30
+CHUNK_SIZE = 300
+CHUNK_OVERLAP = 50
 
 CURRENT_DIR = os.path.dirname(__file__)
 PREPARE_DIR = os.path.join(CURRENT_DIR, "..", "07")
