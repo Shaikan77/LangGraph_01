@@ -1,3 +1,19 @@
+"""
+사업관리 가이드 (예: eGov-PM Advisor)
+=====================================================
+- 작성자: 김동욱 (shaikan.msn@gmail.com)
+- 작성일: 2026-10-01(목) 10:00
+- 최종 수정일: 2026-10-01(목)
+- 저작권: Copyright (c) 2026 한국기술교육대학교. All rights reserved.
+- 라이선스: MIT License (또는 비공개/사내 라이선스)
+- Project Structure
+-----------------------------------------------------
+- PMGuide_RAG
+- ┠── config.py     모든 설정값 저장
+- ┠── indexer.py    문서(pdf) → 인덱스 (한번만, 준비단계)
+- ┠── rag.py        검색 + 생성 (핵심 로직)
+- └── app.py        UI
+"""
 # ============================================================
 # 사용자의 질문과 관련된 문서를 FAISS에서 검색하고,
 # 검색된 문서를 근거로 OpenAI LLM이 최종 답변을 생성합니다.
@@ -9,10 +25,24 @@ import warnings
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 
 import config
 from indexer import get_store
-from prompts import PROMPTS
+#from prompts import PROMPTS
+
+RAG_PROMPT_V3 = ChatPromptTemplate.from_template(     
+    "당신은 전자정부지원사업 사업관리 문서를 안내하는 담당자입니다.\n\n"
+    "[규칙]\n"
+    "1. 아래 [자료]에 있는 내용만 근거로 답하십시오.\n"     
+    "2. 질문의 일부만 자료에 있다면, 있는 부분은 답하고 "     
+    "없는 부분만 '자료에서 확인할 수 없습니다'라고 하십시오.\n"     
+    "3. 추측하거나 일반 상식으로 보충하지 마십시오.\n"     
+    "4. 각 문장 끝에 근거 번호를 [1] 형식으로 표기하십시오.\n"     
+    "5. 5문장 정도 간결하게 답하십시오.\n\n"     
+    "[자료]\n{context}\n\n"
+    "[질문]\n{question}"
+)
 
 warnings.filterwarnings("ignore", message="Relevance scores must be between 0 and 1")
 
@@ -32,11 +62,7 @@ llm = ChatOpenAI(
 )
 
 # 프롬프트 → LLM → 문자열 변환 순서로 실행 체인을 만듭니다.
-chain = (
-    PROMPTS[config.PROMPT_VER]
-    | llm
-    | StrOutputParser()
-)
+chain = (RAG_PROMPT_V3 | llm | StrOutputParser())
 
 # ============================================================
 # 2. 검색 함수
@@ -60,7 +86,6 @@ def _search(question, k=None):
     docs = []
 
     for doc, score in results:
-
         if score >= config.MIN_SCORE:
             docs.append(doc)
 
@@ -97,7 +122,7 @@ def _build_context(docs):
 
         # 출처 정보와 문서 내용을 하나의 문자열로 만듭니다.
         part = (
-            f"[{number}] {filename} p.{page_no}\n"
+            f"[{number}] {filename} / p.{page_no}\n"
             f"{doc.page_content}"
         )
 
@@ -108,7 +133,6 @@ def _build_context(docs):
 
     return context
 
-
 # ============================================================
 # 4. 질문 처리 함수
 # ============================================================
@@ -116,13 +140,11 @@ def _build_context(docs):
 # 검색 결과를 근거로 LLM에게 답변을 생성시킵니다.
 # ============================================================
 def ask(question: str, k: int = None) -> dict:
-
     # --------------------------------------------------------
     # 질문 입력 확인
     # --------------------------------------------------------
     # 질문이 없거나 공백만 있으면 종료합니다.
     if not question or not question.strip():
-
         return {
             "answer": "질문을 입력해주세요.",
             "sources": [],
@@ -136,7 +158,6 @@ def ask(question: str, k: int = None) -> dict:
         docs = _search(question, k)
 
     except Exception as error:
-
         print("[검색 오류]", error)
 
         return {
@@ -150,7 +171,6 @@ def ask(question: str, k: int = None) -> dict:
     # --------------------------------------------------------
     # 관련 문서를 찾지 못했다면 LLM을 호출하지 않습니다.
     if not docs:
-
         return {
             "answer": config.MSG_NO_DOC,
             "sources": [],
