@@ -40,12 +40,20 @@ import config
 # PDF에서 반복적으로 제거할 불필요한 문구
 NOISE = ["행정안전부", "한국지능정보사회진흥원", "NIA"]
 
+def clean_korean_text(text: str) -> str:
+    """깨진 서러게이트 유니코드 제거 및 불필요한 연속 공백 정제"""
+    # 1. 고립된 서러게이트 문자 및 깨진 유니코드 제거
+    text = text.encode("utf-8", "surrogatepass").decode("utf-8", "ignore")
+    # 2. 제어 문자 제거 (줄바꿈 \n, 탭 \t 제외)
+    text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]', '', text)
+    
+    return text
 # ============================================================
 # PDF 문서를 읽고 텍스트와 메타데이터를 정리
 # ============================================================
 def _load():
     # PDF 파일의 모든 페이지를 읽습니다.
-    # loader = PyPDFLoader(str(config.DOC_PATH))
+    #loader = PyPDFLoader(str(config.DOC_PATH))
     loader = PyMuPDFLoader(str(config.DOC_PATH))
 
     docs = loader.load()
@@ -53,7 +61,7 @@ def _load():
     # 각 페이지를 하나씩 정리합니다.
     for doc in docs:
         # 페이지의 텍스트를 가져옵니다.
-        text = doc.page_content
+        text = clean_korean_text(doc.page_content)
 
         # 불필요한 문구를 제거합니다.
         for noise in NOISE:
@@ -72,6 +80,11 @@ def _load():
         page = doc.metadata.get("page", 0)
         doc.metadata["page_no"] = page + 1
 
+        print(f"[{page+1}]")
+        print(text.strip())
+        print("-" * 50)
+
+    print("*" * 50)
     # 모든 페이지 처리가 끝난 뒤 반환합니다.
     return docs
 

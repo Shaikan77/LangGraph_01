@@ -60,7 +60,6 @@ def _search(question, k=None):
     docs = []
 
     for doc, score in results:
-
         if score >= config.MIN_SCORE:
             docs.append(doc)
 
@@ -74,7 +73,6 @@ def _search(question, k=None):
 # ============================================================
 
 def _build_context(docs):
-
     # 문서별 문자열을 저장할 리스트입니다.
     parts = []
 
@@ -122,7 +120,6 @@ def ask(question: str, k: int = None) -> dict:
     # --------------------------------------------------------
     # 질문이 없거나 공백만 있으면 종료합니다.
     if not question or not question.strip():
-
         return {
             "answer": "질문을 입력해주세요.",
             "sources": [],
@@ -134,9 +131,7 @@ def ask(question: str, k: int = None) -> dict:
     # --------------------------------------------------------
     try:
         docs = _search(question, k)
-
     except Exception as error:
-
         print("[검색 오류]", error)
 
         return {
@@ -166,7 +161,6 @@ def ask(question: str, k: int = None) -> dict:
     # LLM 답변 생성
     # --------------------------------------------------------
     try:
-
         answer = chain.invoke({
             "context": context,
             "question": question
@@ -204,7 +198,6 @@ def ask(question: str, k: int = None) -> dict:
 
     # 실제 문서 범위를 벗어난 인용이 있는지 확인합니다.
     for number in citation_numbers:
-
         if number < 1 or number > len(docs):
             cited = False
 
