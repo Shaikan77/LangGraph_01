@@ -4,10 +4,10 @@
 ## 전자정부지원사업 사업관리 도우미 RAG
 
 ### 사업관리 가이드 (예: eGov-PM Advisor)
-=====================================================
+-----------------------------------------------------
 - 작성자: 김동욱 (shaikan.msn@gmail.com)
 - 작성일: 2026-10-01(목) 10:00
-- 최종 수정일: 2026-10-01(목)
+- 최종 수정일: 2026-10-01(목) 10:56
 - 저작권: Copyright (c) 2026 한국기술교육대학교. All rights reserved.
 - 라이선스: MIT License (또는 비공개/사내 라이선스)
 - Project Structure
@@ -18,6 +18,11 @@
 - ┠── rag.py        검색 + 생성 (핵심 로직)
 - └── app.py        UI
 
-#### 공공기관 문서의 특징을 고려하여 PyMuPDF 엔진 사용 - 한글 추출 정확도와 속도 면에서 월등
-from langchain_community.document_loaders import PyPDFLoader 대신에
-from langchain_community.document_loaders import PyMuPDFLoader 사용
+#### (1) 공공기관 문서의 특징을 고려하여 PyMuPDF 엔진 사용 - 한글 추출 정확도와 속도 면에서 월등
+PyPDFLoader 대신에 from langchain_community.document_loaders import PyMuPDFLoader
+
+#### (2) fontTools 라이브러리 활용 - 한글 깨지거나 누락되는 경우 예방
+pip install fonttools
+
+
+※ 그럼에도 불구하고 성능은 최악!
