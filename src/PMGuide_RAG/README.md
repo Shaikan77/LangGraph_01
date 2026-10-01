@@ -26,3 +26,4 @@ pip install fonttools
 
 
 ※ 그럼에도 불구하고 성능은 최악!
+- chunk_size, chunk_overlap 조절 등등 최적화 중 ....
