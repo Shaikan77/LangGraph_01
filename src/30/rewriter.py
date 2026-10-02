@@ -3,16 +3,13 @@
 # 검색에 실패한 질문을 검색하기 좋은 표현으로 다시 작성합니다.
 # 원본 question은 유지하고, 검색용 query만 변경합니다.
 # ============================================================
-
 import os
 import sys
 import warnings
 
-
 # ------------------------------------------------------------
 # 필요한 모듈의 경로를 설정합니다.
 # ------------------------------------------------------------
-
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 
@@ -30,30 +27,24 @@ sys.path.append(os.path.join(SRC_DIR, "25"))
 # 현재 30차시 모듈을 가장 먼저 찾도록 합니다.
 sys.path.insert(0, CURRENT_DIR)
 
-
 # ------------------------------------------------------------
 # 필요한 모듈을 가져옵니다.
 # ------------------------------------------------------------
-
 import config
 
 from prompts import REWRITE_PROMPT
 from generator import _llm
 from langchain_core.output_parsers import StrOutputParser
 
-
 # ------------------------------------------------------------
 # Rewrite Chain을 만듭니다.
 #
 # Prompt → LLM → 문자열
 # ------------------------------------------------------------
-
 rewrite_chain = REWRITE_PROMPT | _llm | StrOutputParser()
-
 
 # 최대 재작성 횟수입니다.
 MAX_REWRITE = getattr(config, "MAX_REWRITE", 2)
-
 
 # ============================================================
 # Rewrite Node
@@ -81,11 +72,9 @@ def rewrite_node(state) -> dict:
     if not reason:
         reason = "관련 자료를 찾지 못함"
 
-
     # --------------------------------------------------------
     # 최대 재작성 횟수에 도달하면 중단합니다.
     # --------------------------------------------------------
-
     if rewrites >= MAX_REWRITE:
 
         return {

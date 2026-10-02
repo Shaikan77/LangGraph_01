@@ -4,13 +4,10 @@
 # Generator가 만든 답변을 근거 자료와 비교하여 검사합니다.
 # 문제가 있으면 재생성(retry) 또는 재검색(research)을 요청합니다.
 # ============================================================
-
-
 import os
 import sys
 import json
 import re
-
 
 # ------------------------------------------------------------
 # 현재 파일의 위치를 기준으로 필요한 폴더를 찾습니다.
@@ -20,15 +17,12 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # src 폴더 경로입니다.
 SRC_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
-
-# 25차시 Generator 폴더 경로입니다.
-GENERATOR_DIR = os.path.join(CURRENT_DIR, "..", "25")
-
 # JUDGE_PROMPT가 있는 13차시 경로
 sys.path.insert(0, os.path.join(CURRENT_DIR, "..", "13"))
-
 # 24차시 Retriever 폴더 경로입니다.
 RETRIEVER_DIR = os.path.join(CURRENT_DIR, "..", "24")
+# 25차시 Generator 폴더 경로입니다.
+GENERATOR_DIR = os.path.join(CURRENT_DIR, "..", "25")
 
 # src 폴더를 파이썬 모듈 검색 경로에 추가합니다.
 sys.path.insert(0, SRC_DIR)
@@ -39,11 +33,9 @@ sys.path.insert(0, GENERATOR_DIR)
 # Retriever 폴더를 검색 경로에 추가합니다.
 sys.path.insert(0, RETRIEVER_DIR)
 
-
 # ------------------------------------------------------------
 # Verifier에서 사용할 모듈을 가져옵니다.
 # ------------------------------------------------------------
-
 # 심판용 프롬프트를 가져옵니다.
 from prompts import JUDGE_PROMPT
 
@@ -53,19 +45,15 @@ from generator import build_context, _llm
 # LLM 응답을 문자열로 변환하는 파서입니다.
 from langchain_core.output_parsers import StrOutputParser
 
-
 # ------------------------------------------------------------
 # 심판용 LLM 체인을 만듭니다.
 # ------------------------------------------------------------
-
 # 프롬프트 → LLM 호출 → 문자열 변환 순서로 실행됩니다.
 judge_chain = JUDGE_PROMPT | _llm | StrOutputParser()
-
 
 # ============================================================
 # LLM 응답에서 JSON을 추출하는 함수
 # ============================================================
-
 def parse_json(raw_text: str) -> dict:
     """
     LLM 응답에서 JSON 부분만 찾아 딕셔너리로 변환합니다.
@@ -84,11 +72,9 @@ def parse_json(raw_text: str) -> dict:
     # 찾은 JSON 문자열을 파이썬 딕셔너리로 변환합니다.
     return json.loads(match.group())
 
-
 # ============================================================
 # Verifier Node
 # ============================================================
-
 def verifier_node(state: dict) -> dict:
     """
     Generator가 만든 답변을 검증합니다.
@@ -105,7 +91,6 @@ def verifier_node(state: dict) -> dict:
 
     # 사용자 질문을 가져옵니다.
     question = state.get("question", "")
-
 
     # --------------------------------------------------------
     # 1차 검사: 비용이 발생하지 않는 규칙 기반 검사
@@ -143,11 +128,9 @@ def verifier_node(state: dict) -> dict:
             "log": ["검증(규칙): 답변 길이 부족"]
         }
 
-
     # --------------------------------------------------------
     # 2차 검사: LLM 심판을 이용한 의미 기반 검사
     # --------------------------------------------------------
-
     try:
         # 검색 문서를 하나의 문자열로 합칩니다.
         context = build_context(documents)
@@ -171,7 +154,6 @@ def verifier_node(state: dict) -> dict:
             "reason": f"검증 불가({error_name}) - 통과 처리",
             "log": [f"검증 오류: {error_name}"]
         }
-
 
     # --------------------------------------------------------
     # LLM 심판 결과를 읽습니다.

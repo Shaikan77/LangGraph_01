@@ -14,7 +14,7 @@ from graph_state2 import make_initial_state
 from retriever import retriever_node
 from generator import generator_node
 from verifier import verifier_node
-from fallback import fallback_node
+from fallback import fallback
 
 import config
 
@@ -74,7 +74,7 @@ def build_graph():
     g.add_node("generate", generator_node)
     g.add_node("verify", verifier_node)
     g.add_node("bump", bump_node)
-    g.add_node("fallback", fallback_node)
+    g.add_node("fallback", fallback)
 
     # 시작 → 검색
     g.add_edge(START, "retrieve")

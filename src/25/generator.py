@@ -3,13 +3,13 @@
 # 검색된 문서를 바탕으로 답변을 생성합니다.
 # 근거가 없으면 LLM을 호출하지 않고 안내 메시지를 반환합니다.
 # ============================================================
-
 import os
 import sys
 import re
 import warnings
 
 from dotenv import load_dotenv
+
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 
@@ -28,6 +28,9 @@ sys.path.insert(0, os.path.join(SRC_DIR, "13"))
 # retriever.py가 있는 24차시 폴더 추가
 sys.path.insert(0, os.path.join(SRC_DIR, "24"))
 
+# 24차시 Retriever Node를 가져옵니다.
+from retriever import retriever_node
+
 # 불필요한 경고 메시지 숨기기
 warnings.filterwarnings("ignore")
 
@@ -40,17 +43,14 @@ from prompts import PROMPTS
 # .env 파일 읽기
 load_dotenv()
 
-
 # LLM이 근거를 찾지 못했을 때 사용할 문구
 NO_INFO = "자료에서 확인할 수 없습니다"
-
 
 # 사용할 LLM 객체 생성
 _llm = ChatOpenAI(
     model=config.LLM_MODEL,
     temperature=config.TEMPERATURE,
 )
-
 
 def create_chain():
     """
@@ -71,7 +71,6 @@ def create_chain():
 
     return chain
 
-
 def build_context(documents):
     """
     검색된 문서들을 LLM에게 전달할 하나의 문자열로 합칩니다.
@@ -79,12 +78,10 @@ def build_context(documents):
     각 문서 앞에 [1], [2]와 같은 번호와
     파일명, 페이지 번호를 붙입니다.
     """
-
     context_parts = []
 
     # 검색된 문서를 하나씩 처리
     for index, document in enumerate(documents, start=1):
-
         # 파일명을 가져옵니다.
         filename = document.metadata.get("filename", "?")
 
@@ -105,7 +102,6 @@ def build_context(documents):
 
     return context
 
-
 def check_citation(answer, document_count):
     """
     답변에 포함된 인용 번호가 정상인지 확인합니다.
@@ -114,7 +110,6 @@ def check_citation(answer, document_count):
         [1], [2] → 정상
         인용 없음 → 실패
         문서가 2개인데 [3] → 실패
-
     반환값:
         (검사 결과, 검사 메시지)
     """
@@ -137,7 +132,6 @@ def check_citation(answer, document_count):
 
     # 인용 번호가 실제 문서 개수 안에 있는지 확인합니다.
     for number in citation_numbers:
-
         # 문서가 2개인데 [3]을 사용하면 잘못된 번호입니다.
         if number < 1 or number > document_count:
             invalid_numbers.append(number)
@@ -151,7 +145,6 @@ def check_citation(answer, document_count):
     message = f"인용 {len(citation_numbers)}건 정상"
     return True, message
 
-
 def generator_node(state) -> dict:
     """
     검색된 문서를 바탕으로 답변을 생성합니다.
@@ -159,7 +152,6 @@ def generator_node(state) -> dict:
     입력:
         state["question"]  : 사용자 질문
         state["documents"] : 검색된 문서 목록
-
     출력:
         answer             : 생성된 답변
         insufficient       : 근거 부족 여부
@@ -196,7 +188,6 @@ def generator_node(state) -> dict:
             "context": context,
             "question": question,
         })
-
     # LLM 호출 중 오류가 발생하면 안내 결과를 반환합니다.
     except Exception as error:
         error_name = type(error).__name__
@@ -233,10 +224,6 @@ def generator_node(state) -> dict:
 
 # 이 파일을 직접 실행했을 때만 테스트합니다.
 if __name__ == "__main__":
-
-    # 24차시 Retriever Node를 가져옵니다.
-    from retriever import retriever_node
-
     # 테스트할 질문 목록입니다.
     questions = [
         "환불은 며칠 이내에 신청해야 하나요?",

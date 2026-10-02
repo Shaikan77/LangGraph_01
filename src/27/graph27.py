@@ -1,15 +1,11 @@
 # 이 파일은 Retriever, Generator, Verifier를 하나의 그래프로 연결합니다.
 # 답변 검증에 실패하면 최대 2회까지 다시 생성하고, 계속 실패하면 안내 메시지를 반환합니다.
-
-
 import os
 import sys
-
 
 # ============================================================
 # 필요한 폴더를 Python이 찾을 수 있도록 등록합니다.
 # ============================================================
-
 BASE_DIR = os.path.dirname(__file__)
 
 sys.path.insert(0, os.path.join(BASE_DIR, "..", "18"))
@@ -18,11 +14,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, "..", "24"))
 sys.path.insert(0, os.path.join(BASE_DIR, "..", "25"))
 sys.path.insert(0, os.path.join(BASE_DIR, "..", "26"))
 
-
 # ============================================================
 # LangGraph와 각 모듈을 가져옵니다.
 # ============================================================
-
 from langgraph.graph import StateGraph, START, END
 
 from graph_state import RAGState
@@ -31,19 +25,16 @@ from graph_state2 import make_initial_state
 from retriever import retriever_node
 from generator import generator_node
 from verifier import verifier_node
-from fallback import fallback_node
+from fallback import fallback
 
 import config
-
 
 # 최대 재시도 횟수를 설정합니다.
 MAX_RETRY = getattr(config, "MAX_RETRY", 2)
 
-
 # ============================================================
 # 재시도 횟수 증가 노드
 # ============================================================
-
 def bump_node(state):
     """답변 재생성 횟수를 1 증가시킵니다."""
 
@@ -61,11 +52,9 @@ def bump_node(state):
         ],
     }
 
-
 # ============================================================
 # 검색 결과에 따른 이동 결정
 # ============================================================
-
 def route_after_retrieve(state):
     """검색 성공 여부에 따라 다음 노드를 결정합니다."""
 
@@ -76,11 +65,9 @@ def route_after_retrieve(state):
     # 검색에 실패하면 안내 메시지를 반환합니다.
     return "empty"
 
-
 # ============================================================
 # 검증 결과에 따른 이동 결정
 # ============================================================
-
 def route_after_verify(state):
     """Verifier의 판정 결과에 따라 다음 노드를 결정합니다."""
 
@@ -104,11 +91,9 @@ def route_after_verify(state):
     # 아직 재시도할 수 있으면 답변을 다시 생성합니다.
     return "retry"
 
-
 # ============================================================
 # LangGraph 조립
 # ============================================================
-
 def build_graph():
     """RAG 처리에 필요한 노드와 연결을 구성합니다."""
 
@@ -120,7 +105,7 @@ def build_graph():
     graph.add_node("generate", generator_node)
     graph.add_node("verify", verifier_node)
     graph.add_node("bump", bump_node)
-    graph.add_node("fallback", fallback_node)
+    graph.add_node("fallback", fallback)
 
     # 그래프가 시작되면 검색부터 실행합니다.
     graph.add_edge(START, "retrieve")
@@ -162,7 +147,6 @@ def build_graph():
 # 그래프를 한 번 만들어 여러 질문에 재사용합니다.
 app = build_graph()
 
-
 # ============================================================
 # 외부에서 질문을 처리하는 함수
 # ============================================================
@@ -193,7 +177,6 @@ def ask(question):
 # ============================================================
 # 직접 실행 테스트
 # ============================================================
-
 if __name__ == "__main__":
 
     # 테스트할 질문 목록입니다.

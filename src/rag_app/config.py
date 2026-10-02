@@ -1,9 +1,9 @@
 from pathlib import Path
+
 BASE = Path(__file__).resolve().parent
 
-
 # ── 문서 처리 ──
-DOC_PATH      = BASE.parent.parent / "data/manual.pdf"
+DOC_PATH      = BASE.parent.parent / "data" / "manual.pdf"
 CHUNK_SIZE    = 500      # 500→300: +10%p, 토큰 33% 절감
 CHUNK_OVERLAP = 50       # chunk_size의 10%
 

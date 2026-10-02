@@ -59,11 +59,10 @@ RETRY_PROMPT = ChatPromptTemplate.from_template(
     "{question}"
 )
 
-# PROMPTS["retry"] = RETRY_PROMPT
+PROMPTS["retry"] = RETRY_PROMPT
 
 
-# 26차시에 추가
-
+# 26차시에 추가(검증을 위한 프롬프트)
 JUDGE_PROMPT = ChatPromptTemplate.from_template(
     "당신은 RAG 답변을 검증하는 엄격한 심판입니다.\n"
     "답변을 생성하지 말고, 오직 평가만 하십시오.\n\n"

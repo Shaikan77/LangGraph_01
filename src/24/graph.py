@@ -8,16 +8,8 @@ import sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # 18차시와 19차시의 모듈을 사용할 수 있도록 경로를 추가합니다.
-sys.path.insert(
-    0,
-    os.path.join(CURRENT_DIR, "..", "18")
-)
-
-sys.path.insert(
-    0,
-    os.path.join(CURRENT_DIR, "..", "19")
-)
-
+sys.path.insert(0, os.path.join(CURRENT_DIR, "..", "18"))
+sys.path.insert(0, os.path.join(CURRENT_DIR, "..", "19"))
 
 # LangGraph 그래프를 만들 때 사용하는 클래스와 상수입니다.
 from langgraph.graph import StateGraph, START, END
@@ -32,10 +24,10 @@ from graph_state2 import make_initial_state
 from retriever import retriever_node
 
 # 답변을 생성하는 노드입니다.
-from generate import generate_node
+from generate import generate 
 
 # 검색 결과가 없을 때 실행하는 노드입니다.
-from fallback import fallback_node
+from fallback import fallback 
 
 
 # ==================================================
@@ -61,10 +53,10 @@ def build_graph():
     graph.add_node("retrieve", retriever_node)
 
     # 답변 생성 노드를 등록합니다.
-    graph.add_node("generate", generate_node)
+    graph.add_node("generate", generate)
 
     # 검색 실패 처리 노드를 등록합니다.
-    graph.add_node("fallback", fallback_node)
+    graph.add_node("fallback", fallback)
 
     # 그래프가 시작되면 검색부터 실행합니다.
     graph.add_edge(START, "retrieve")

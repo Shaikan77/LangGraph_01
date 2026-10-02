@@ -1,12 +1,10 @@
 # 이 파일은 질문과 관련된 문서를 검색하는 Retriever Node입니다.
 # 재시도할수록 검색 문서 수를 늘리고, 점수 기준을 조금씩 완화합니다.
-
 import os
 import sys
 import warnings
 
 from dotenv import load_dotenv
-
 
 # ==================================================
 # 기본 경로와 환경 설정
@@ -14,6 +12,7 @@ from dotenv import load_dotenv
 
 # 현재 파일이 있는 폴더의 절대 경로입니다.
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+print(f"현재 폴더: {CURRENT_DIR}")
 
 # 현재 파일의 상위 폴더인 src의 경로입니다.
 SRC_DIR = os.path.abspath(
@@ -35,14 +34,11 @@ import config
 # 벡터 저장소를 가져오는 함수를 불러옵니다.
 from rag_app.indexer import get_store
 
-
 # ==================================================
 # 벡터 저장소 준비
 # ==================================================
-
 # 모듈이 처음 실행될 때 벡터 저장소를 한 번만 준비합니다.
 _store = get_store()
-
 
 # ==================================================
 # 검색 방식에 따라 문서를 검색합니다.
@@ -75,7 +71,6 @@ def search_documents(query: str, k: int, search_type: str):
         query,
         k=k,
     )
-
 
 # ==================================================
 # 재시도 가능한 Retriever Node
@@ -213,18 +208,15 @@ def retriever_node(state: dict) -> dict:
         ],
     }
 
-
 # ==================================================
 # 재시도 횟수에 따른 동작 테스트
 # ==================================================
 if __name__ == "__main__":
-
     # 반복해서 검색할 질문입니다.
     query = "환불은 며칠 이내인가요?"
 
     # 재시도 횟수를 0회, 1회, 2회로 바꾸어 테스트합니다.
     for retries in range(3):
-
         # Retriever Node에 전달할 State입니다.
         state = {
             "query": query,

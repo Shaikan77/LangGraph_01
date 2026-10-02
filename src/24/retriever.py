@@ -1,17 +1,15 @@
 # 이 파일은 질문과 관련된 문서를 검색하는 Retriever Node입니다.
 # Similarity 검색과 MMR 검색을 지원하며, 검색 점수와 실패 원인을 함께 반환합니다.
-
 import os
 import sys
 import warnings
+import config
 
 from dotenv import load_dotenv
-
 
 # ==================================================
 # 기본 환경 설정
 # ==================================================
-
 # 현재 파일의 위치를 기준으로 src 폴더를 찾습니다.
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -26,23 +24,17 @@ sys.path.insert(0, SRC_DIR)
 # 불필요한 경고 메시지를 숨깁니다.
 warnings.filterwarnings("ignore")
 
-# 프로젝트의 설정값을 불러옵니다.
-import config
-
 # 벡터 저장소를 불러오는 함수를 가져옵니다.
 from rag_app.indexer import get_store
-
 
 # ==================================================
 # 환경 변수와 벡터 저장소 준비
 # ==================================================
-
 # 프로젝트의 .env 파일을 불러옵니다.
 load_dotenv()
 
 # 프로그램이 시작될 때 벡터 저장소를 한 번만 준비합니다.
 _store = get_store()
-
 
 # ==================================================
 # 검색 방식에 따라 문서를 검색합니다.
@@ -54,7 +46,6 @@ def search_documents(query: str, k: int, search_type: str):
     search_type이 "mmr"이면 MMR 검색을 사용하고,
     그 외의 경우에는 Similarity 검색을 사용합니다.
     """
-
     # MMR 검색을 사용하는 경우입니다.
     if search_type == "mmr":
         documents = _store.max_marginal_relevance_search(
@@ -75,7 +66,6 @@ def search_documents(query: str, k: int, search_type: str):
         query,
         k=k,
     )
-
 
 # ==================================================
 # Retriever Node
@@ -131,7 +121,6 @@ def retriever_node(state: dict) -> dict:
             k,
             search_type,
         )
-
     except Exception as error:
         return {
             "documents": [],
@@ -200,7 +189,6 @@ def retriever_node(state: dict) -> dict:
             f"{len(kept_documents)}/{len(search_results)}건 통과"
         ],
     }
-
 
 # ==================================================
 # Retriever Node 단독 테스트

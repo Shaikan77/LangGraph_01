@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
-        "./src/07"
+        "./src/07",
+        "./src/19"
     ]
 }
